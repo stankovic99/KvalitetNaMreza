@@ -6,19 +6,20 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class SensorService extends Service {
-
-    public int counter = 0;
-
+    public int counter=0;
     public SensorService(Context applicationContext) {
         super();
-        Log.i("Stefan","Tuka sum vo konstruktor na sensorservice!");
+        Log.i("Stefan", "Tuka sum vo konstruktor na SensorService");
     }
 
-    public SensorService(){    }
+    public SensorService() {
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -30,38 +31,38 @@ public class SensorService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.i("EXIT","onDestroy!");
-        Intent broadcastIntent = new Intent(this, SensorRestarterReceiver.class);
+        Log.i("onDestroy", "ondestroy! vo SensorService");
+        Intent broadcastIntent = new Intent(this, SensorRestarterBroadcastReceiver.class);
         sendBroadcast(broadcastIntent);
-        stopTimerTask();
+        stoptimertask();
     }
 
     private Timer timer;
     private TimerTask timerTask;
-    long oldTime = 0;
+    long oldTime=0;
 
-    private void startTimer() {
-        timer = new Timer();//postavanje nov tajmer
-        initializeTimerTask();//Inicijaliziranje na rabota za tajmer
-        timer.schedule(timerTask,1000,1000);//rasporedi tajmer da se budi sekoja sekunda
+    public void startTimer() {
+        timer = new Timer();
+        initializeTimerTask();
+        timer.schedule(timerTask, 1000, 1000);
     }
 
-    private void initializeTimerTask() {
+    public void initializeTimerTask() {
         timerTask = new TimerTask() {
-            @Override
             public void run() {
-                Log.i("In timer", "in timer ++++ " + (counter++));
+                Log.i("Tajmer", "Vo tajmer ++++  "+ (counter++));
             }
         };
     }
 
-    private void stopTimerTask() {
-        if(timer != null){
+    public void stoptimertask() {
+        if (timer != null) {
             timer.cancel();
             timer = null;
         }
     }
 
+    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
