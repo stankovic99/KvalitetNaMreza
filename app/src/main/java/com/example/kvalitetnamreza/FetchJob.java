@@ -20,25 +20,37 @@ public class FetchJob extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... strings) {
-        return NetworkUtils.getInfo();
+        String jsonItem = NetworkUtils.getInfo();
+        String job = null;
+        try{
+            int i = 0;
+            JSONArray jsonArray = new JSONArray(jsonItem);
+            while (i<jsonArray.length() && job == null){
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                try {
+                    job = jsonObject.getString("jobType");
+                }catch (JSONException e){
+                    e.printStackTrace();
+                }
+                i++;
+            }
+            NetworkUtils.putInfo(job);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return job;
     }
 
     @Override
-    protected void onPostExecute(String jsonItem) {
-        super.onPostExecute(jsonItem);
+    protected void onPostExecute(String job) {
+        super.onPostExecute(job);
         try{
-            Log.i("onPostExecute",jsonItem);
-            int i = 0;
-            JSONArray jsonArray = new JSONArray(jsonItem);
-            String job = null;
-            JSONObject jsonObject = jsonArray.getJSONObject(0);
-            String name = jsonObject.getString("jobType");
-            if(name != null){
-                mJobText.get().setText(name);
+            if(job != null){
+                mJobText.get().setText(job);
             }else{
                 mJobText.get().setText(R.string.no_results);
             }
-            Log.i("onPostExecuteJSON",name);
         }catch (Exception e){
             e.printStackTrace();
         }
