@@ -9,17 +9,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FetchJob extends AsyncTask<String, Void, String> {
 
-    private WeakReference<TextView> mJobText;
-
-    FetchJob(TextView jobText){
-        this.mJobText = new WeakReference<>(jobText);
-    }
-
     @Override
-    protected String doInBackground(String... strings) {
+    public String doInBackground(String... strings) {
         String jsonItem = NetworkUtils.getInfo();
         String job = null;
         try{
@@ -27,7 +23,6 @@ public class FetchJob extends AsyncTask<String, Void, String> {
             JSONArray jsonArray = new JSONArray(jsonItem);
             while (i<jsonArray.length() && job == null){
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-
                 try {
                     job = jsonObject.getString("jobType");
                 }catch (JSONException e){
@@ -35,24 +30,12 @@ public class FetchJob extends AsyncTask<String, Void, String> {
                 }
                 i++;
             }
-            NetworkUtils.putInfo(job);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return job;
-    }
-
-    @Override
-    protected void onPostExecute(String job) {
-        super.onPostExecute(job);
-        try{
-            if(job != null){
-                mJobText.get().setText(job);
-            }else{
-                mJobText.get().setText(R.string.no_results);
+            if(strings[0]=="Post"){
+                NetworkUtils.putInfo(job);
             }
         }catch (Exception e){
             e.printStackTrace();
         }
+        return job;
     }
 }

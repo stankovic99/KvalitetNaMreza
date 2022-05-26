@@ -50,7 +50,7 @@ public class SensorService extends Service {
     public void initializeTimerTask() {
         timerTask = new TimerTask() {
             public void run() {
-                Log.i("Tajmer", "Vo tajmer ++++  "+ (counter++));
+                //Log.i("Tajmer", "Vo tajmer ++++  "+ (counter++));
             }
         };
     }
